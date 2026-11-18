@@ -3,5 +3,88 @@
 details.room-options{border-top:1px solid var(--line);padding-top:12px;color:var(--muted);font-size:12px}details.room-options summary{cursor:pointer;margin-bottom:10px;color:#cbd5df}.room-options label{margin:9px 0}.option-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.room-options .check{display:flex;align-items:center;gap:8px}.room-options .check input{width:auto}.binding-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-top:1px solid var(--line);color:#ccd5df}.binding-row button{padding:6px 14px;min-width:90px}.touch-controls{display:none;justify-content:space-between;align-items:end;padding:12px 6px;touch-action:none;user-select:none}.dpad{display:grid;justify-items:center;gap:4px}.dpad>div{display:flex;gap:4px}.touch-controls button{width:48px;height:44px;padding:5px;border-radius:12px;font-size:18px;touch-action:none}.touch-controls .kick-touch{height:58px;width:90px;border-radius:50%;font-size:11px;font-weight:800;color:#18220c;background:var(--lime);border-color:var(--lime)}.touch-controls .pressed{filter:brightness(1.4);transform:scale(.95)}
 @media(max-width:720px){.touch-controls{display:flex}.arena{padding:4px}.gamebar{flex-wrap:wrap}.room-options .option-grid{grid-template-columns:1fr}.controls{justify-content:center}.controls button{display:none}}
 
+/* During play, keep the stadium full-screen and reveal the room UI on demand. */
+.game:not(.hidden){position:fixed;inset:0;z-index:10;margin:0;background:#08110d;overflow:hidden}
+.game .arena{position:absolute;inset:0;padding:0;border:0;border-radius:0;box-shadow:none;background:#08110d}
+.game canvas{width:100%;height:100%;aspect-ratio:auto;border-radius:0}
+.gamebar,.game .under,.game .controls{display:none}
+.game.hud-open .gamebar{display:flex;position:absolute;z-index:2;top:0;left:0;right:0;margin:0;padding:16px 20px;background:linear-gradient(#08110de8,transparent);}
+.game.hud-open .under{display:grid;position:absolute;z-index:2;left:16px;bottom:14px;width:min(680px,calc(100% - 32px));margin:0;grid-template-columns:1fr 1.2fr;}
+.game.hud-open .controls{display:flex;position:absolute;z-index:2;right:16px;bottom:14px;padding:0;background:#0c1118b8;border-radius:8px;}
+.hud-toggle{position:absolute;z-index:4;top:12px;right:12px;padding:7px 10px;background:#0c1118aa;color:#eaf1f5;font-size:11px;opacity:.72}
+.hud-toggle:hover{opacity:1}
+.hud-toggle kbd{margin-left:5px;border:1px solid #718092;border-radius:3px;padding:2px 4px;font:10px 'DM Mono'}
+.game.hud-open .hud-toggle{top:82px}
+@media(max-width:720px){
+ .game.hud-open .gamebar{padding:10px;gap:8px}
+ .game.hud-open .under{left:8px;bottom:110px;width:calc(100% - 16px);grid-template-columns:1fr}
+ .game.hud-open .roster{display:none}
+ .game.hud-open .chatbox{padding:9px}
+ .game.hud-open .controls{display:none}
+ .game .touch-controls{position:absolute;z-index:3;left:0;right:0;bottom:0;padding:12px 18px 18px;background:linear-gradient(transparent,#08110d99)}
+ .game.hud-open .touch-controls{bottom:0}
+ .game.hud-open .hud-toggle{top:74px}
+}
+.team-columns{display:grid;grid-template-columns:1fr 1.12fr 1fr;gap:5px;height:182px}
+.team-column{display:flex;min-width:0;flex-direction:column;background:#101619;border:1px solid #202a30;border-radius:4px;overflow:hidden}
+.team-column>header{height:28px;flex:none;display:flex;align-items:center;justify-content:center;gap:8px;background:#3a3c3e;color:#f0f1f2;font-size:12px;text-transform:capitalize}
+.team-column>header .teamBtn{margin:0;padding:2px 9px;border:0;background:#3a3c3e;color:#fff;font-weight:800}
+.red-column>header b{color:#ff6b70}.blue-column>header b{color:#66b5ff}
+.player-list{flex:1;overflow:auto;padding:4px}
+.player-row{padding:5px 6px;border-radius:3px;color:#f2c84b;font-size:12px;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.player-row[draggable="true"]{cursor:grab}.player-row[draggable="true"]:active{cursor:grabbing}
+.team-column.drop-active{outline:2px solid var(--lime);outline-offset:-2px;background:#1a2922}
+.lobby-actions{margin-top:8px}
+#hostControls{display:flex;gap:6px;justify-content:center}
+#hostControls button{padding:5px 10px;font-size:11px}
+.game:not(.hud-open) .team-columns{height:160px}
+@media(max-width:720px){.game.hud-open .roster{display:block}.game.hud-open .team-columns{height:120px}.game.hud-open .player-row{font-size:10px;padding:4px}}
+
+/* Keep chat available during play even while the rest of the HUD is hidden. */
+.game:not(.hud-open) .under{display:block;position:absolute;z-index:2;left:14px;bottom:14px;width:min(340px,calc(100% - 28px));margin:0}
+.game:not(.hud-open) .roster{display:none}
+.game:not(.hud-open) .chatbox{display:block;padding:9px 11px;background:#101820d9;backdrop-filter:blur(6px)}
+.game:not(.hud-open) .messages{height:62px}
+.game:not(.hud-open) .gamebar{display:flex;position:absolute;z-index:3;top:10px;left:50%;transform:translateX(-50%);width:max-content;align-items:center;gap:16px;margin:0;padding:8px 14px;border:1px solid #dce7e533;border-radius:10px;background:#0c1118c9;backdrop-filter:blur(6px)}
+.game:not(.hud-open) .gamebar>div:first-child,.game:not(.hud-open) #leaveBtn{display:none}
+.game:not(.hud-open) .score{margin:0;font-size:24px;gap:9px}
+.game:not(.hud-open) .clock{font-size:17px}
+.game:not(.hud-open) .match-status{font-size:8px}
+@media(min-width:721px){
+ .game:not(.hidden) .touch-controls{display:contents}
+ .game:not(.hidden) .touch-controls .dpad,.game:not(.hidden) .touch-controls .kick-touch{display:none}
+ .game:not(.hidden) .touch-size{position:absolute;z-index:4;right:16px;bottom:16px}
+}
+.touch-controls{--control-scale:1}
+.touch-controls button{width:calc(48px * var(--control-scale));height:calc(44px * var(--control-scale));font-size:calc(18px * var(--control-scale))}
+.touch-controls .kick-touch{width:calc(90px * var(--control-scale));height:calc(58px * var(--control-scale));font-size:calc(11px * var(--control-scale))}
+.touch-size{display:flex;align-items:center;gap:3px;padding:4px;border:1px solid #dce7e533;border-radius:8px;background:#0c1118b8}
+.touch-size span{font:8px 'DM Mono';color:#c2ced8;margin:0 3px}
+.touch-size button{width:25px;height:25px;padding:0;font:10px 'DM Mono';border-radius:5px}
+.touch-size button.selected{background:var(--lime);color:#18220c;border-color:var(--lime);font-weight:800}
+.game:not(.hud-open) .touch-controls{gap:8px}
+@media(max-width:720px){
+ .game:not(.hud-open) .under{bottom:112px;left:8px;width:min(320px,calc(100% - 16px))}
+ .touch-size{position:absolute;right:116px;bottom:23px}
+ .touch-size span{display:none}
+ .touch-size button{width:22px;height:22px}
+}
+
 .clock-block{text-align:center}.match-status{font:9px 'DM Mono';letter-spacing:.12em;color:#a9bd90;margin-top:3px}.match-status.stopped{color:var(--lime)}.controls kbd.active-key{border-color:var(--lime);color:var(--lime);box-shadow:0 0 8px #c4f36b44}
 .stadium-preview{display:flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:8px;background:#101821;padding:10px}.stadium-preview b,.stadium-preview small{display:block}.stadium-preview b{font-size:12px;color:#edf3f6}.stadium-preview small{font:10px 'DM Mono';color:var(--muted);margin-top:4px}.preview-pitch{position:relative;width:88px;height:48px;flex:none;border:2px solid #a8cbb0;border-radius:4px;background:repeating-linear-gradient(90deg,var(--pitch-grass) 0 12px,var(--pitch-stripe) 12px 24px)}.preview-pitch:before{content:'';position:absolute;left:50%;top:0;height:100%;border-left:1px solid #d8e6d4aa}.preview-pitch span{position:absolute;left:50%;top:50%;width:15px;height:15px;border:1px solid #d8e6d4aa;border-radius:50%;transform:translate(-50%,-50%)}.preview-pitch.rounded-preview{border-radius:14px}.preview-pitch.hockey-preview{border-color:#f2f5ec}.preview-pitch.hockey-preview:before{border-left:2px solid #e55e5e}.stadium-label{font:9px 'DM Mono';letter-spacing:.12em;color:var(--muted);margin-top:5px}.stadium-label b{color:var(--lime)}
+.game.hud-open .roster{display:block}
+@media(max-width:720px){.game.hud-open .roster{display:block}}
+#hostControls{flex-wrap:wrap}
+#hostControls button{flex:1 1 auto;white-space:nowrap;padding:5px 7px;font-size:10px}
+#hostControls button.event-active{border-color:var(--lime);color:var(--lime);background:#27351e}
+.kick-rate-setting{display:flex;align-items:center;gap:4px;color:#cbd5df;font:10px 'DM Mono';white-space:nowrap}
+.kick-rate-setting select{padding:4px 5px;font-size:10px}
+.number-setting{display:grid;gap:7px;padding-top:12px;border-top:1px solid var(--line);color:#cbd5df}
+.number-setting input{width:100%}.number-setting small{color:var(--muted);font-size:11px}.number-setting button{justify-self:start;padding:7px 10px}
+.game:not(.hud-open) .under{left:50%;bottom:10px;transform:translateX(-50%);width:min(800px,calc(100vw - 24px))}
+.game:not(.hud-open) .chatbox{padding:9px 10px 7px;background:#26312ddf;border:0;border-radius:6px;backdrop-filter:blur(8px)}
+.game:not(.hud-open) .chathead{display:none}
+.game:not(.hud-open) .messages{height:120px;max-height:22vh;padding:2px 0 7px}
+.game:not(.hud-open) #chatForm input{background:#101817;border:0}
+.system-message{color:#83d4a3}
+@media(max-width:720px){.game:not(.hud-open) .under{bottom:105px;width:calc(100vw - 16px)}.game:not(.hud-open) .messages{height:90px;max-height:16vh}}
